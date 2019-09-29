@@ -1,0 +1,48 @@
+version: '3'
+services:
+  db:
+    image: postgres:11.5
+    volumes:
+      - ./backend/db/pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"  
+    networks:
+      app_net:
+        ipv4_address: 192.168.32.2
+
+  backend:
+    build: ./backend
+    command: /bin/bash -c "rm -rf tmp/pids/server.pid; bundle exec rails s -p 8080 -b 0.0.0.0"
+    volumes:
+      - ./backend:/app/backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      app_net:
+        ipv4_address: 192.168.32.3
+    tty: true
+    stdin_open: true
+
+  frontend:
+    build: ./frontend
+    command: yarn dev
+    volumes:
+      - ./frontend:/app/frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      app_net:
+        ipv4_address: 192.168.32.4
+    tty: true
+
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.32.0/20
