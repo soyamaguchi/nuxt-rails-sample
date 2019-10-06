@@ -1,6 +1,6 @@
 # Nuxt(SSR) + Rails API on Docker
 
-## sample code with separation frontend and backend.
+### Sample code with separation frontend and backend.
 
 ***DEMO:***
 
@@ -18,16 +18,24 @@ $ git clone git@github.com:soyamaguchi/nuxt-rails-sample.git
 
 ## :rocket: Environment Building
 
+Build the docker file and create an image.
+
+Then install the package.
+
 ```sh
 $ cd nuxt-rails-sample
 $ docker-compose build
 $ docker-compose run --rm frontend yarn install
-$ docker-compose exec backend rails db:create
-$ docker-compose exec backend rails db:migrate
-$ docker-compose up
 ```
 
+Next, create DB, table, and data.
 
+Finally, create a container and start it.
+
+```sh
+$ docker-compose exec backend bash -c 'rails db:create && rails db:migrate && rails db:seed'
+$ docker-compose up
+```
 
 ## :squirrel: Author
 
